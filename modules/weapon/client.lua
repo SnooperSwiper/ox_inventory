@@ -7,7 +7,10 @@ client.weapon = Weapon
 
 -- generic group animation data
 local anims = {}
-anims[`GROUP_MELEE`] = { 'melee@holster', 'unholster', 200, 'melee@holster', 'holster', 600 }
+--anims[`GROUP_MELEE`] = { 'melee@holster', 'unholster', 200, 'melee@holster', 'holster', 600 }
+--anims[`GROUP_PISTOL`] = { 'reaction@intimidation@cop@unarmed', 'intro', 400, 'reaction@intimidation@cop@unarmed', 'outro', 450 }
+--anims[`GROUP_STUNGUN`] = anims[`GROUP_PISTOL`]
+anims[`GROUP_MELEE`] = anims[`GROUP_PISTOL`]
 anims[`GROUP_PISTOL`] = { 'reaction@intimidation@cop@unarmed', 'intro', 400, 'reaction@intimidation@cop@unarmed', 'outro', 450 }
 anims[`GROUP_STUNGUN`] = anims[`GROUP_PISTOL`]
 

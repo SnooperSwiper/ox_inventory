@@ -1,6 +1,5 @@
 if not lib then return end
 
----@type { [string]: OxClientItem }
 local Items = shared.items
 
 local function displayMetadata(metadata, value)
@@ -41,8 +40,155 @@ Item('bandage', function(data, slot)
 	local health = GetEntityHealth(cache.ped)
 	ox_inventory:useItem(data, function(data)
 		if data then
-			SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + maxHealth / 16)))
+			SetEntityHealth(cache.ped, math.min(maxHealth, math.floor(health + maxHealth / 8)))
+			TriggerEvent('mythic_hospital:client:RemoveBleed')
+            TriggerEvent('mythic_hospital:client:ResetLimbs')
 			lib.notify({ description = 'You feel better already' })
+		end
+	end)
+end)
+
+Item('oxy', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	-- if health < maxHealth then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				TriggerEvent('mythic_hospital:client:RemoveBleed')
+                TriggerEvent('mythic_hospital:client:ResetLimbs')
+				TriggerServerEvent('hud:server:RelieveStress', 15)
+				SetEntityHealth(cache.ped, math.min(maxHealth, health + 30))
+				--ox_inventory:notify({text = 'These make you feel really good'})
+				lib.notify({ description = 'You feel better already...' })
+			end
+		end)
+	-- end
+end)
+
+--[[Item('valium', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	-- if health < maxHealth then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				--TriggerEvent('mythic_hospital:client:RemoveBleed')
+               -- TriggerEvent('mythic_hospital:client:ResetLimbs')
+				TriggerServerEvent('hud:server:RelieveStress', 100)
+				--SetEntityHealth(cache.ped, math.min(maxHealth, health + 30))
+				--ox_inventory:notify({text = 'These make you feel really good'})
+				lib.notify({ description = 'Your stress levels are lower...' })
+			end
+		end)
+	-- end
+end)]]
+
+Item('xanax', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	-- if health < maxHealth then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				--TriggerEvent('mythic_hospital:client:RemoveBleed')
+               -- TriggerEvent('mythic_hospital:client:ResetLimbs')
+				TriggerServerEvent('hud:server:RelieveStress', 100)
+				--SetEntityHealth(cache.ped, math.min(maxHealth, health + 30))
+				--ox_inventory:notify({text = 'These make you feel really good'})
+				lib.notify({ description = 'Your stress levels are lower...' })
+			end
+		end)
+	-- end
+end)
+
+Item('medkit', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	-- if health < maxHealth then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				TriggerEvent('mythic_hospital:client:RemoveBleed')
+				TriggerEvent('mythic_hospital:client:ResetLimbs')
+				SetEntityHealth(cache.ped, math.min(maxHealth, health + 100))
+				lib.notify({ description = 'You feel better already...' })
+			end
+		end)
+	-- end
+end)
+
+Item('ifak', function(data, slot)
+	local maxHealth = GetEntityMaxHealth(cache.ped)
+	local health = GetEntityHealth(cache.ped)
+	-- if health < maxHealth then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				TriggerEvent('mythic_hospital:client:RemoveBleed')
+				TriggerEvent('mythic_hospital:client:ResetLimbs')
+				SetEntityHealth(cache.ped, math.min(maxHealth, health + 100))
+				lib.notify({ description = 'You feel better already...' })
+			end
+		end)
+	-- end
+end)
+
+Item('weapontint_pink', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 3)
+		end
+	end)
+end)
+
+Item('weapontint_black', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 0)
+		end
+	end)
+end)
+
+Item('weapontint_green', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 1)
+		end
+	end)
+end)
+
+Item('weapontint_gold', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 2)
+		end
+	end)
+end)
+
+Item('weapontint_army', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 4)
+		end
+	end)
+end)
+
+Item('weapontint_lspd', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 5)
+		end
+	end)
+end)
+
+Item('weapontint_orange', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 6)
+		end
+	end)
+end)
+
+Item('weapontint_plat', function(data, slot)
+	ox_inventory:useItem(data, function(data)
+		if data then
+			TriggerEvent('weapons:client:EquipTint', 7)
 		end
 	end)
 end)
@@ -53,6 +199,18 @@ Item('armour', function(data, slot)
 			if data then
 				SetPlayerMaxArmour(PlayerData.id, 100)
 				SetPedArmour(cache.ped, 100)
+			end
+		end)
+	end
+end)
+
+Item('armours', function(data, slot)
+	currenta = GetPedArmour(cache.ped) 
+	if GetPedArmour(cache.ped) < 100 then
+		ox_inventory:useItem(data, function(data)
+			if data then
+				SetPlayerMaxArmour(PlayerData.id, 100)
+				SetPedArmour(cache.ped, (currenta+50))
 			end
 		end)
 	end
@@ -133,6 +291,139 @@ Item('clothing', function(data, slot)
 		end
 	end)
 end)
+
+Item('woodenspoon', function(data, slot)
+	ox_inventory:useItem( data, function(data)
+		if data then
+		--	TriggerEvent('police:client:UnCuffPlayer')
+			TriggerEvent('tkt-cuffs:uncuffplayer')
+			lib.notify({ description = 'You broke the cuffs' })
+		end
+	end)
+end)
+
+Item('muffin', function(data, slot)
+	ox_inventory:useItem( data, function(data)
+		if data then
+			TriggerServerEvent('hud:server:RelieveStress', 50)
+			lib.notify({ description = 'You feel relaxed...' })
+		end
+	end)
+end)
+
+Item('racingtablet', function(data, slot)
+	ox_inventory:useItem( data, function(data)
+		if data then
+			exports['rahe-racing']:openRacingTablet()
+		--	ox_inventory:notify( {text = 'Tasty...'})
+		end
+	end)
+end)
+
+Item('laptop', function(data, slot)
+	ox_inventory:useItem( data, function(data)
+		if data then
+			TriggerEvent('rahe-boosting:client:openTablet')
+		--	ox_inventory:notify( {text = 'Tasty...'})
+		end
+	end)
+end)
+
+Item('antipolice', function(data, slot)
+	ox_inventory:useItem( data, function(data)
+		if data then
+			TriggerEvent('rahe-boosting:client:gpsHackingDeviceUsed')
+		--	ox_inventory:notify( {text = 'Tasty...'})
+		end
+	end)
+end)
+
+Item('lockpickboosting', function(data, slot)
+	ox_inventory:useItem( data, function(data)
+		if data then
+			TriggerEvent('rahe-boosting:client:hackingDeviceUsed')
+		--	ox_inventory:notify( {text = 'Tasty...'})
+		end
+	end)
+end)
+
+Item('photo', function(data, slot)
+    TriggerEvent('wert-camera:client:use-photo', slot.metadata.photourl)
+end)
+
+Item('camera', function(data, slot)
+    TriggerEvent("wert-camera:client:use-camera")
+end)
+
+Item('cuerack', function(data, slot)
+ox_inventory:useItem( data, function(data)
+	if data then
+		ox_inventory:notify( {text = 'You put down a cue rack'})
+		x, y, z = table.unpack(GetEntityCoords(PlayerPedId(), true))
+		local heading = GetEntityHeading(PlayerPedId())
+
+		cuerack = `prop_pool_rack_01`
+
+		RequestModel(cuerack)
+		while not HasModelLoaded(cuerack) do
+		Citizen.Wait(1)
+		end
+
+		local object = CreateObject(cuerack, x+1, y, z, true, true, false) -- x+1
+		PlaceObjectOnGroundProperly(object)
+		SetEntityHeading(object, heading)
+		FreezeEntityPosition(object, false)
+		SetModelAsNoLongerNeeded(object)
+	end
+end)
+end)
+
+exports('hasItem', function()
+	local inventory = exports.ox_inventory
+	local count = inventory:Search('count', 'phone')
+	if count > 0 then 
+		return true
+	else 
+		--exports['okokNotify']:Alert("WARNING", 'You dont have a phone', 5000, 'warning')
+		lib.notify({ description = 'You dont have a phone' })
+		return false
+	end
+end)
+
+-----------------------------------------------------------------------------------------------
+
+local ListaObjekata = {
+	`prop_pool_rack_01`,
+}
+
+
+AddEventHandler('takechair', function()
+	for i = 1, #ListaObjekata do
+		local obb = GetClosestObjectOfType(GetEntityCoords(PlayerPedId()), 5.0, ListaObjekata[i], false, true, true)
+		if DoesEntityExist(obb) then
+			NetworkRequestControlOfEntity(obb)
+			while not NetworkHasControlOfEntity(obb) do
+				Wait(100)
+			end
+			DeleteEntity(obb)
+			DeleteObject(obb)				
+			break
+		end
+	end
+end)
+
+exports.qtarget:AddTargetModel({1299967108}, {
+options = {
+	{
+		event = "takechair",
+		icon = "fas fa-hand-holding",
+		label = "Pick Up",
+		num = 1
+	},
+},
+	distance = 2
+})
+-----------------------------------------------------------------------------------------------
 
 -----------------------------------------------------------------------------------------------
 

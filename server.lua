@@ -277,7 +277,7 @@ local function conversionScript()
 	conversionScript = func()
 end
 
-RegisterCommand('convertinventory', function(source, args)
+--[[RegisterCommand('convertinventory', function(source, args)
 	if source ~= 0 then return shared.warning('This command can only be executed with the server console.') end
 	if type(conversionScript) == 'function' then conversionScript() end
 	local arg = args[1]
@@ -289,4 +289,16 @@ RegisterCommand('convertinventory', function(source, args)
 	end
 
 	CreateThread(convert)
-end, true)
+end, true)]]
+
+exports.ox_inventory:RegisterStash('dawson', 'Dawson Stash', 150, 1000000)	
+exports.ox_inventory:RegisterStash('smokestorage', 'Smoke Storage', 20, 10000)	
+exports.ox_inventory:RegisterStash('taco', 'Taco Storage', 30, 50000)	
+exports.ox_inventory:RegisterStash('auto', 'Auto Storage', 100, 100000)	
+exports.ox_inventory:RegisterStash('ottos', 'Ottos Storage', 100, 100000)	
+exports.ox_inventory:RegisterStash('redline', 'Redline Storage', 100, 150000)	
+exports.ox_inventory:RegisterStash('ballas', 'Ballas Stash', 70, 150000)	
+exports.ox_inventory:RegisterStash('jonkos', 'Jonkos Stash', 70, 150000)	
+exports.ox_inventory:RegisterStash('crips', 'Crips Stash', 70, 150000)	
+exports.ox_inventory:RegisterStash('triad', 'Triad Stash', 30, 50000)	
+exports.ox_inventory:RegisterStash('burgershot', 'BS Stash', 15, 50000)

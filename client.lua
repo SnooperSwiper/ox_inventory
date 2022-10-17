@@ -104,7 +104,6 @@ function client.openInventory(inv, data)
 				local input = lib.inputDialog(shared.locale('police_evidence'), {shared.locale('locker_number')})
 
 				if input then
-					---@diagnostic disable-next-line: cast-local-type
 					input = tonumber(input[1])
 				else
 					return lib.notify({ description = shared.locale('locker_no_value'), type = 'error' })
@@ -201,9 +200,10 @@ local function useItem(data, cb)
 				end
 			end
 
-			local success = (not data.usetime or lib.progressBar({
+			local success = (not data.usetime or lib.progressCircle({
 				duration = data.usetime,
 				label = data.label or shared.locale('using', result.label),
+				position = 'bottom',
 				useWhileDead = data.useWhileDead,
 				canCancel = data.cancel,
 				disable = data.disable,
@@ -247,7 +247,7 @@ local function useSlot(slot)
 		local item = PlayerData.inventory[slot]
 		if not item then return end
 
-		local data = Items[item.name]
+		local data = item and Items[item.name]
 		if not data then return end
 
 		if data.component and not currentWeapon then
@@ -366,12 +366,9 @@ local function useButton(id, slot)
 	if PlayerData.loaded and not invBusy and not lib.progressActive() then
 		local item = PlayerData.inventory[slot]
 		if not item then return end
-
-		local data = Items[item.name]
-		local buttons = data?.buttons
-
-		if buttons and buttons[id]?.action then
-			buttons[id].action(slot)
+		local data = item and Items[item.name]
+		if data.buttons and data.buttons[id]?.action then
+			data.buttons[id].action(slot)
 		end
 	end
 end
@@ -778,20 +775,20 @@ RegisterNetEvent('ox_inventory:createDrop', function(drop, data, owner, slot)
 		})
 	end
 
-	if owner == PlayerData.source then
+	if owner == PlayerData.source and invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
 		if currentWeapon?.slot == slot then
 			currentWeapon = Weapon.Disarm(currentWeapon)
+
+			if not invOpen then return end
 		end
 
-		if invOpen and #(GetEntityCoords(cache.ped) - data.coords) <= 1 then
-			if not cache.vehicle then
-				client.openInventory('drop', drop)
-			else
-				SendNUIMessage({
-					action = 'setupInventory',
-					data = { rightInventory = currentInventory }
-				})
-			end
+		if not cache.vehicle then
+			client.openInventory('drop', drop)
+		else
+			SendNUIMessage({
+				action = 'setupInventory',
+				data = { rightInventory = currentInventory }
+			})
 		end
 	end
 end)
@@ -1280,12 +1277,6 @@ RegisterNUICallback('swapItems', function(data, cb)
 		data.instance = currentInstance
 	end
 
-	if currentWeapon and data.fromType ~= data.toType then
-		if (data.fromType == 'player' and data.fromSlot == currentWeapon.slot) or (data.toType == 'player' and data.toSlot == currentWeapon.slot) then
-			currentWeapon = Weapon.Disarm(currentWeapon, true)
-		end
-	end
-
 	local success, response, weaponSlot = lib.callback.await('ox_inventory:swapItems', false, data)
 
 	if success then
@@ -1296,6 +1287,7 @@ RegisterNUICallback('swapItems', function(data, cb)
 				currentWeapon.slot = weaponSlot
 				TriggerEvent('ox_inventory:currentWeapon', currentWeapon)
 			end
+
 		end
 	elseif response then
 		lib.notify({ type = 'error', description = shared.locale(response) })
@@ -1322,4 +1314,37 @@ RegisterNUICallback('buyItem', function(data, cb)
 	end
 
 	cb(response)
+end)
+
+RegisterCommand('weapondetails', function()	
+	if currentWeapon and client.hasGroup(shared.police) then	
+		local msg	
+		if currentWeapon.metadata.registered then msg = shared.locale('weapon_registered', currentWeapon.label, currentWeapon.metadata.serial, currentWeapon.metadata.registered)	
+		else msg = shared.locale('weapon_unregistered', currentWeapon.label) end	
+		Utils.Notify({text = msg, duration = 8000})	
+	end	
+end)
+
+RegisterCommand('slimjim', function()	
+	local ped = PlayerPedId()	
+	if client.hasGroup(shared.police) and IsPedInAnyVehicle(ped, false) then	
+		local slimjim = GetVehiclePedIsIn(ped, false)	
+		if lib.progressCircle({	
+			duration = 8000,	
+			position = 'bottom',	
+			useWhileDead = false,	
+			canCancel = true,	
+			disable = {	
+				car = true,	
+				move = true,	
+			},	
+		}) then 	
+			local vehicle = GetVehiclePedIsIn(ped, false)	
+			TriggerEvent('cd_garage:AddKeys', GetVehicleNumberPlateText(slimjim):gsub("^%s*(.-)%s*$", "%1"))	
+			Utils.Notify({text = 'You managed to start the vehicle', duration = 8000})	
+		else 	
+			print('Do stuff when cancelled') 	
+			Utils.Notify({text = 'You stopped trying...', duration = 8000})	
+		end	
+	end	
 end)

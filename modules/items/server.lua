@@ -1,9 +1,7 @@
 if not lib then return end
 
----@overload fun(name: string): OxServerItem
 local Items = {}
 local ItemList = shared.items
----@cast ItemList { [string]: OxServerItem }
 
 TriggerEvent('ox_inventory:itemList', ItemList)
 
@@ -21,6 +19,44 @@ Items.containers = {
 		whitelist = {
 			['pizza'] = true -- Pizza box for pizza only
 		}
+	},
+	['cameraalbum'] = {
+		size = {150, 1000},
+		whitelist = {
+			['photo'] = true 
+		}
+	},
+	['tacobag'] = {
+		size = {5, 5000},
+		whitelist = {
+			['fishtaco'] = true, 
+			['classictaco'] = true,
+			['burritotaco'] = true,
+			['taco'] = true,
+			['nachos'] = true,
+			['mexsalad'] = true,
+			['sprite'] = true,
+			['cola'] = true,
+			['tequila'] = true,
+			['beer'] = true,
+			['quesadilla'] = true
+		}
+	},
+	['sowjar'] = {
+		size = {10, 5000},
+		whitelist = {
+			['og_kush_joint'] = true, 
+			['joint_stardawg'] = true,
+			['purple_haze_joint'] = true,
+			['banana_kush_joint'] = true,
+			['bud_stardawg'] = true,
+			['bud_bananakush'] = true,
+			['bud_purplehaze'] = true,
+			['bud_ogkush'] = true,
+		}
+	},
+	['hollowtaco'] = {
+		size = {3, 1000},
 	}
 }
 
@@ -37,10 +73,10 @@ local trash = {
 	{description = 'An empty chips bag.', weight = 5, image = 'trash_chips'},
 }
 
----@param _ table?
+---@param internal table?
 ---@param name string?
 ---@return table?
-local function getItem(_, name)
+local function getItem(internal, name)
 	if name then
 		name = name:lower()
 
@@ -54,7 +90,7 @@ local function getItem(_, name)
 	return ItemList
 end
 
-setmetatable(Items --[[@as table]], {
+setmetatable(Items, {
 	__call = getItem
 })
 
